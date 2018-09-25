@@ -1,0 +1,9 @@
+A successful setup should
+1.) Wt::WApplication::require should get the right file.
+2.) http://localhost:9090/...js/myjs.js  should serve the right file
+3.) http://localhost:9090/...wrong...js/myjs.js should *not* serve a file
+
+So, --deploy-path='/app'
+http://localhost:9090/app  should serve the app and load the js file using Wt::WApplication::require.
+http://localhost:9090/app/js/myjs.js  should show the js file
+http://localhost:9090/js/myjs.js should *not* show the js file.
