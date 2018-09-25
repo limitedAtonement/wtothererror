@@ -1,6 +1,8 @@
 CC=g++
 CXXFLAGS=-Wall -Wextra -pedantic '-std=c++17' -g -O0
 resourcedir=resources
+staticresourcessrc=$(shell find /usr/local/share/Wt/resources -type f)
+staticresourcesdest=$(staticresourcessrc:/usr/local/share/Wt/%=dist/app/%)
 distdir=dist
 executable=$(distdir)/meals
 sources=$(wildcard src/*.cpp)
@@ -9,9 +11,9 @@ headers=$(wildcard src/*.hpp)
 artifactssrc=$(wildcard $(resourcedir)/*)
 artifactsdest=$(artifactssrc:$(resourcedir)/%=$(distdir)/%)
 
-all: $(executable) $(artifactsdest)
+all: $(executable) $(artifactsdest) $(staticresourcesdest) Makefile
 
-$(executable): $(distdir) $(objects)
+$(executable): $(distdir) $(objects) Makefile
 	$(CC) $(CXXFLAGS) -o $(executable) \
 	$(objects) \
 	-lwt -lwthttp -lwtdbo -lwtdbosqlite3 \
@@ -19,6 +21,10 @@ $(executable): $(distdir) $(objects)
 
 $(distdir) :
 	if [ ! -e $(distdir) ]; then mkdir $(distdir); fi;
+
+$(staticresourcesdest) : dist/app/resources/% : /usr/local/share/Wt/resources/% Makefile | dist
+	@mkdir -p $(dir $@);
+	@cp -r $< $@;
 
 $(artifactsdest) : $(distdir)/% : $(resourcedir)/% $(distdir)
 	echo copying $< to $@
