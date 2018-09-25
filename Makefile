@@ -2,7 +2,7 @@ CC=g++
 CXXFLAGS=-Wall -Wextra -pedantic '-std=c++17' -g -O0
 resourcedir=resources
 staticresourcessrc=$(shell find /usr/local/share/Wt/resources -type f)
-staticresourcesdest=$(staticresourcessrc:/usr/local/share/Wt/%=dist/app/%)
+staticresourcesdest=$(staticresourcessrc:/usr/local/share/Wt/%=dist/docroot/app/%)
 distdir=dist
 executable=$(distdir)/meals
 sources=$(wildcard src/*.cpp)
@@ -20,9 +20,9 @@ $(executable): $(distdir) $(objects) Makefile
 	-lboost_signals -lboost_thread -lboost_atomic
 
 $(distdir) :
-	if [ ! -e $(distdir) ]; then mkdir $(distdir); fi;
+	if [ ! -e $@ ]; then mkdir -p $@; fi;
 
-$(staticresourcesdest) : dist/app/resources/% : /usr/local/share/Wt/resources/% Makefile | dist
+$(staticresourcesdest) : dist/docroot/app/resources/% : /usr/local/share/Wt/resources/% Makefile | dist
 	@mkdir -p $(dir $@);
 	@cp -r $< $@;
 
